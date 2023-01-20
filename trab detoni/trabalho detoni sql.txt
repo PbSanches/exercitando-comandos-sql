@@ -1,0 +1,142 @@
+USE biblioteca;
+create table alunos ( 
+    id int,
+    nome varchar,
+    endereco varchar,
+    PRIMARY KEY ('ID');
+
+);
+create table depertamento (
+    id int,
+    nome varchar,
+    PRIMARY KEY ('ID');
+);
+create table graduacao (
+    id int,
+    ano_ingresso date,
+    PRIMARY KEY ('ID') ;
+ );
+
+create table disciplina (
+    id int,
+    nome varchar,
+    ementa varchar,
+    num_creditos int,
+    id_dpto int, 
+    id_professor int,
+    PRIMARY KEY ('ID');
+    FOREIGN KEY ( `id_professor` ) REFERENCES `professor` ( `num_cadr` ) ;
+    FOREIGN KEY ( `id_dpto` ) REFERENCES `departamento` ( `id` ) ;
+);
+create table professor (
+    num_cadr int,
+    nome varchar,
+    id_dpto int,
+    PRIMARY KEY ('num_cadr');
+    FOREIGN KEY ( `id_dpto` ) REFERENCES `departamento` ( `id` ) ;
+);
+create table cursa (
+    id_disciplina int,
+    id_aluno int,
+    media float,
+    frquencia float,
+     PRIMARY KEY ('ID');
+    FOREIGN KEY ( `id_disciplina` ) REFERENCES `disciplina` ( `id` ) ;
+    FOREIGN KEY ( `id_aluno` ) REFERENCES `aluno` ( `id` ) ;
+);
+create table pos-graduacao (
+    id int,
+    formacao varchar,
+    id_professsor int 
+     PRIMARY KEY ('ID');
+      FOREIGN KEY ( `id_professor` ) REFERENCES `professor` ( `num_cadr` ) ;
+);
+create table tel_aluno ( 
+    id_tel int,
+    numero_tel int,
+    id aluno int,
+    PRIMARY KEY ('ID_INT');
+   FOREIGN KEY ( `id_aluno` ) REFERENCES `aluno` ( `id` ) ; 
+);
+create table pre-requi(
+    id_disciplina int,
+    id_requi int,
+    PRIMARY KEY ('ID_REQUI');
+    FOREIGN KEY ( `id_disciplina` ) REFERENCES `disciplina` ( `id` ) ;
+);
+
+insert into aluno (id, nome, endereco)
+values (21, 'pablo', 'av jockey club 438');
+insert into aluno (id, nome, endereco)
+values (27, 'kimber', 'rua way rorges 232');
+insert into departamento (id, nome)
+values (1, 'ads');
+insert into departamento (id, nome)
+values (2, 'arq');
+insert into graduacao (id, ano_ingresso,)
+values (55, '2010');
+insert into graduacao (id, ano_ingresso,)
+values (77, '2013');
+insert into disciplina (id, nome, ementa, num_creditos, id_dpto, id_professor)
+values (1, 'Banco de dados', 'ementa', 2, 1, 55);
+insert into disciplina (id, nome, ementa, num_creditos, id_dpto, id_professor)
+VALUES (2, 'desenho', 'ementa', 7, 2, 77);
+insert into professor (num_cadr, nome, id_dpto)
+values (55, vagner, 1,);
+insert into professor (num_cadr, nome, id_dpto)
+values (77, wilson, 2,);
+insert into cursa (id_disciplina, id_aluno, media, frequencia)
+values (1, 21, 5, 10);
+insert into cursa (id_disciplina, id_aluno, media, frequencia)
+values (2, 27, 10, 3);
+insert values pos-graduacao ( id, formacao, id_professor)
+values (88, psicologia, 1)
+insert values pos-graduacao ( id, formacao, id_professor)
+values (81, filosofia, 2); 
+insert into tel_alunos (id_tel, numero, id_aluno)
+values (1, 43999221110, 27);
+insert values tel_aluno (id_tel, numero, id_aluno)
+values (2, 43996079007, 21);
+insert into pre-requi (id_disciplina, id_requi)
+values (1, 1);
+insert into pre-requi (id_disciplina, id_requi)
+values (2, 2);
+
+delete from "graduacao" where ano_ingresso = 2021;
+select COUNT(*) FROM "graduacao";
+select nome FROM "Aluno"
+where "id" IN (
+    select "graduacao"."id"
+    from "graduacao"
+);
+select nome
+from "Aluno" aluno
+where aluno."id" IN (
+    select "id_aluno"
+    from "Cursa" cursa
+    where cursa."id_disciplinas"
+    in (
+        select "id_prof"
+        from "Disciplina" disp
+        where disp."id_professor"
+       in (
+              select "num_cadr"
+              from "Professor" prof
+              where prof.nome = 'wagner'
+        )
+    )
+);
+select nome
+from "Aluno" aluno
+where aluno'id" IN (
+    select "id_aluno"
+    from "Cursa" cursa
+    where cursa."id_disciplinas" = 1
+);
+select nome
+from "Disciplina" disp
+where EXISTS(
+    select "id_disciplinas"
+    from "pre-req"
+    where "id_disciplinas" = disp."id"
+)
